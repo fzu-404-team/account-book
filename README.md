@@ -95,7 +95,7 @@ docs/                  演示流程、博客模板、协作交付说明
 python -m unittest discover -s tests -v
 ```
 
-测试使用临时目录，不读取或修改正式账本，覆盖金额精度、输入校验、组合筛选、增删改持久化、损坏文件保护、写入失败回滚、外部修改检测、HTTP 接口与访问限制。
+测试使用临时目录，不读取或修改正式账本，覆盖金额精度、输入校验、组合筛选、增删改持久化、损坏文件保护、写入失败回滚、外部修改检测、备份恢复、一句话记账解析、HTTP 接口与访问限制。
 
 ## 交付材料
 
@@ -103,5 +103,6 @@ python -m unittest discover -s tests -v
 - [博客填写模板](docs/BLOG_TEMPLATE.md)
 - [协作与 Release 清单](docs/DELIVERY.md)
 - [本次验证记录](docs/VERIFICATION.md)
+- [备份恢复说明](docs/BACKUP_DELIVERY.md) 与 [接口约定](docs/BACKUP_API.md)
 
 当前源码包含辅助生成内容，请按课程规则如实说明工具使用、实际作者和成员贡献。团队成员、成员提交记录、实录视频和个人体验需要据实补充。

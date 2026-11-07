@@ -64,7 +64,8 @@ class BackupTests(unittest.TestCase):
         real_replace = os.replace
 
         def fail_ledger_replace(source, destination):
-            if Path(destination) == self.path:
+            # 存储层会 resolve() 路径；macOS 临时目录 /var 实际指向 /private/var，需比较解析后的路径。
+            if Path(destination).resolve() == self.path.resolve():
                 raise OSError("simulated write failure")
             return real_replace(source, destination)
 
