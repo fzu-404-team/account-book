@@ -66,6 +66,56 @@
       </section>
       <section class="panel stats-panel" id="stats-panel" aria-labelledby="stats-title"><div class="panel-heading"><div><h2 id="stats-title">支出花在哪儿</h2><p>当前筛选内的支出构成</p></div><svg class="icon muted"><use href="#i-chart"/></svg></div><div id="donut" class="donut" role="img" aria-label="暂无支出数据"><div class="donut-hole"><span>总支出</span><strong id="chart-total">¥0.00</strong><small id="chart-category-count">0 个类别</small></div></div><div id="chart-legend" class="chart-legend"></div><p id="chart-empty" class="chart-empty">记录一笔支出，看看钱花在了哪里。</p><div class="stats-note"><svg class="icon"><use href="#i-shield"/></svg><span>账本保存于本机<br>日常记录，安心留存</span></div></section>
     </div>
+
+    <section class="panel monthly-panel" id="monthly-panel" aria-labelledby="monthly-title">
+      <div class="panel-heading monthly-heading">
+        <div>
+          <h2 id="monthly-title">月度收支对比</h2>
+          <p>按自然月汇总全部记录，不受上方筛选影响</p>
+        </div>
+        <form id="monthly-form" class="monthly-range" aria-label="选择月度统计的起止月份">
+          <label>开始月份<input id="monthly-start" name="start" type="month" required></label>
+          <span class="monthly-range-sep" aria-hidden="true">至</span>
+          <label>结束月份<input id="monthly-end" name="end" type="month" required></label>
+          <button type="submit" class="button secondary">更新图表</button>
+        </form>
+      </div>
+      <div id="monthly-content" class="monthly-content">
+        <div id="monthly-loading" class="monthly-state monthly-loading" role="status" aria-live="polite">
+          <div class="monthly-skeleton" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          <p>正在加载月度收支…</p>
+        </div>
+        <div id="monthly-error" class="monthly-state monthly-error" role="alert" hidden>
+          <p id="monthly-error-text"></p>
+          <button type="button" id="monthly-retry" class="button secondary">重试</button>
+        </div>
+        <div id="monthly-chart-area" class="monthly-chart-area" hidden>
+          <div class="monthly-meta">
+            <div class="monthly-legend" aria-label="图例">
+              <span><i class="monthly-swatch income" aria-hidden="true"></i>收入</span>
+              <span><i class="monthly-swatch expense" aria-hidden="true"></i>支出</span>
+            </div>
+            <span id="monthly-range-note" class="monthly-range-note"></span>
+          </div>
+          <div class="monthly-scroll">
+            <div id="monthly-chart" class="monthly-chart" role="img" aria-label="月度收支对比图"></div>
+          </div>
+          <p id="monthly-scroll-hint" class="monthly-scroll-hint" hidden>左右滑动查看全部月份</p>
+          <h3 class="monthly-table-title">每月明细 <span>人民币元</span></h3>
+          <div class="monthly-table-wrap">
+            <table class="monthly-table" aria-label="每月收支明细，金额单位为人民币元">
+              <thead><tr><th scope="col">月份</th><th scope="col" class="numeric">收入</th><th scope="col" class="numeric">支出</th><th scope="col" class="numeric">结余</th></tr></thead>
+              <tbody id="monthly-table-body"></tbody>
+              <tfoot><tr><th scope="row">合计</th><td id="monthly-total-income" class="numeric"></td><td id="monthly-total-expense" class="numeric"></td><td id="monthly-total-balance" class="numeric"></td></tr></tfoot>
+            </table>
+          </div>
+        </div>
+        <div id="monthly-empty" class="monthly-state monthly-empty" role="status" hidden>
+          <p id="monthly-empty-text">所选月份还没有收支记录，换一个范围或先记一笔。</p>
+        </div>
+      </div>
+    </section>
+
     <footer class="page-footer"><span>有数记账 <span class="footer-dot">·</span> 把日子过成喜欢的样子</span><span>金额单位：人民币（元）</span></footer>
   </main>
 
