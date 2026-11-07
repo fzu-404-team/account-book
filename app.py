@@ -109,6 +109,7 @@ def create_server(data_file, port=8000, budget_file=None):
                 if method == "GET":
                     assets = {"/": ("index.html", "text/html; charset=utf-8"),
                               "/styles.css": ("styles.css", "text/css; charset=utf-8"),
+                              "/theme-v3.css": ("theme-v3.css", "text/css; charset=utf-8"),
                               "/app.js": ("app.js", "text/javascript; charset=utf-8"),
                               "/favicon.svg": ("favicon.svg", "image/svg+xml")}
                     if url.path in assets:
