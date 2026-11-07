@@ -1824,3 +1824,33 @@ label {
 #restore-preview { white-space:pre-line; overflow-wrap:anywhere; line-height:1.8; }
 #restore-dialog { max-height:90dvh; overflow-y:auto; }
 @media(max-width:600px) { .backup-panel { padding:18px; } .backup-actions { flex-direction:column; } .backup-actions .button { width:100%; } #restore-dialog .dialog-footer { flex-wrap:wrap; } #restore-dialog .dialog-footer .button { flex:1 1 100%; } }
+
+.panel-actions {
+  display:flex;
+  align-items:center;
+  gap:4px;
+  flex-shrink:0
+}
+
+.export-button {
+  min-height:32px;
+  padding:0 12px;
+  font-size:11px;
+  gap:6px
+}
+
+.export-button .icon {
+  width:14px;
+  height:14px
+}
+
+@media(max-width:460px) {
+  .export-button {
+    padding:0 9px;
+    font-size:10px
+  }
+  .export-button .icon {
+    display:none
+  }
+}
+
