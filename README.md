@@ -27,6 +27,7 @@ python app.py --port 8001 --open
 ## 功能
 
 - 新增收入或支出：日期、金额、类别、备注。
+- 一句话记账：输入“昨天午饭 15”“收到工资 5000”等短句，本地规则识别日期、金额、收支和类别后预填“记一笔”对话框，确认后才保存（接口 `POST /api/quick-parse` 只解析不写入）。
 - 编辑记录、二次确认删除；保存成功后同步更新统计。
 - 按日期倒序展示记录，每页 8 笔。
 - 按日期区间、收支类型、类别、金额区间和备注关键字组合筛选。
@@ -80,6 +81,7 @@ app.py                 HTTP 服务、接口与命令行入口
 ledger/models.py       记录模型、日期/金额/类别校验
 ledger/storage.py      JSON 读写与文件保护
 ledger/service.py      记录操作、组合查询与汇总统计
+ledger/quick_entry.py  一句话记账的本地规则解析（只解析不保存）
 static/index.html      页面结构与表单
 static/styles.css      页面样式与响应式布局
 static/app.js          接口交互、表格、筛选、图表

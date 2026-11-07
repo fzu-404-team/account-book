@@ -2,6 +2,7 @@
 
 import argparse
 import csv
+from datetime import date
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from io import StringIO
 import json
@@ -10,6 +11,7 @@ import sys
 from urllib.parse import parse_qs, urlsplit
 import webbrowser
 
+from ledger.quick_entry import parse_text
 from ledger.service import LedgerService
 from ledger.storage import BudgetStore, JsonStore, StorageError
 
@@ -87,6 +89,12 @@ def create_server(data_file, port=8000, budget_file=None):
                     filters = {key: values[-1] for key, values in parse_qs(url.query).items()}
                     records = ledger.query(filters)["records"]
                     return self.respond_csv(200, build_csv_bytes(records))
+                if method == "POST" and url.path == "/api/quick-parse":
+                    # 一句话记账：只解析成草稿返回给前端确认，不写入账本。
+                    payload = self.read_json()
+                    if not isinstance(payload, dict):
+                        raise ValueError("请求内容必须是 JSON 对象")
+                    return self.send_json(200, parse_text(payload.get("text"), date.today()))
                 if method == "GET" and url.path == "/api/records":
                     filters = {key: values[-1] for key, values in parse_qs(url.query).items()}
                     return self.send_json(200, ledger.query(filters))
