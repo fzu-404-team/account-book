@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#245c47">
+  <meta name="theme-color" content="#ef7d32">
   <meta name="description" content="有数记账：在本机记录日常收支，查看明细与分类统计。">
   <title>有数记账 · 让生活心中有数</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/styles.css">
+  <!-- V3 暖橙主题，删除下一行即可恢复原界面 -->
+  <link rel="stylesheet" href="/theme-v3.css">
   <script src="/app.js" defer></script>
 </head>
 <body>
@@ -30,7 +32,7 @@
     <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4 18v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></symbol>
   </svg>
   <aside class="sidebar">
-    <a class="brand" href="#top" aria-label="有数记账首页"><span class="brand-mark"><svg class="icon"><use href="#i-book"/></svg></span><span>有数<span class="brand-sub">个人记账本</span></span></a>
+    <a class="brand" href="#top" aria-label="有数记账首页"><span class="brand-mark"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="brand-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb27a"/><stop offset=".5" stop-color="#f2853d"/><stop offset="1" stop-color="#d4581f"/></linearGradient><linearGradient id="brand-gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><linearGradient id="brand-bar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f07a30"/><stop offset="1" stop-color="#c2540f"/></linearGradient></defs><rect width="48" height="48" rx="14" fill="url(#brand-bg)"/><path d="M14 .5h20A13.5 13.5 0 0 1 47.5 14v5.5C40 16.5 32 15.5 24 15.5S8 16.5.5 19.5V14A13.5 13.5 0 0 1 14 .5Z" fill="url(#brand-gloss)"/><rect x="13" y="12.5" width="24" height="28" rx="5" fill="#a8430f" opacity=".28"/><rect x="12" y="10" width="24" height="28" rx="5" fill="#fffaf5"/><rect x="12" y="10" width="5.5" height="28" rx="2.75" fill="#fde2cb"/><rect x="20.5" y="26" width="3.6" height="7" rx="1.4" fill="#f7b98a"/><rect x="25.6" y="22" width="3.6" height="11" rx="1.4" fill="#f2853d"/><rect x="30.7" y="17" width="3.6" height="16" rx="1.4" fill="url(#brand-bar)"/></svg></span><span>有数<span class="brand-sub">个人记账本</span></span></a>
     <div class="nav-label">我的账本</div>
     <nav aria-label="主导航">
       <a class="nav-link active" href="#top"><svg class="icon"><use href="#i-grid"/></svg>收支概览</a>

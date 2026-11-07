@@ -6,7 +6,28 @@ const money = (cents) => (cents / 100).toLocaleString("zh-CN", { minimumFraction
 const localDate = (date = new Date()) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 const filterForm = $("#filter-form");
 const recordForm = $("#record-form");
-const palette = ["#789363", "#bccd9b", "#d9bc8e", "#9bb9ac", "#c9977f", "#c5c69b", "#a4a7bb", "#d9dcca"];
+// V3 暖橙主题的分类配色，从深到浅，相邻颜色明暗区分明显。
+const palette = ["#c2540f", "#ef7d32", "#f3a46b", "#f7c9a6", "#2f7a52", "#8fbf9f", "#b59a84", "#e3d6c8"];
+const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+// 汇总金额从上一次的值滚动到新值；开启“减少动态效果”时直接显示结果。
+function animateMoney(element, cents) {
+  const from = Number(element.dataset.cents ?? 0);
+  element.dataset.cents = cents;
+  cancelAnimationFrame(element.rafId);
+  if (reduceMotion || from === cents) {
+    element.textContent = money(cents);
+    return;
+  }
+  const start = performance.now();
+  const step = (now) => {
+    const t = Math.min(1, (now - start) / 700);
+    const eased = 1 - (1 - t) ** 3;
+    element.textContent = money(Math.round(from + (cents - from) * eased));
+    if (t < 1) element.rafId = requestAnimationFrame(step);
+  };
+  element.rafId = requestAnimationFrame(step);
+}
 const symbols = { "餐饮": "食", "交通": "行", "购物": "购", "居住": "居", "娱乐": "乐", "医疗": "医", "学习": "学", "工资": "薪", "奖金": "奖", "兼职": "兼", "理财": "财", "红包": "礼" };
 const state = { data: null, page: 1, pageSize: 8, editId: null, deleteId: null, filters: {}, requestId: 0, saving: false, exporting: false, fromQuick: false };
 const quickState = { parsing: false };
@@ -77,9 +98,9 @@ async function refresh(filters = state.filters, resetPage = false) {
 
 function render() {
   const { summary, expense_categories: categories } = state.data;
-  $("#income-total").textContent = money(summary.income_cents);
-  $("#expense-total").textContent = money(summary.expense_cents);
-  $("#balance-total").textContent = money(summary.balance_cents);
+  animateMoney($("#income-total"), summary.income_cents);
+  animateMoney($("#expense-total"), summary.expense_cents);
+  animateMoney($("#balance-total"), summary.balance_cents);
   $("#summary-count").textContent = `${summary.count} 笔记录`;
   $("#record-count").textContent = summary.count;
   $("#scope-label").textContent = Object.keys(state.filters).length ? `当前筛选 · ${summary.count} 笔` : "全部记录";
