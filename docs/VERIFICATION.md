@@ -52,6 +52,15 @@
 - `python -m unittest discover -s tests` 28 项通过，`node --check static/app.js` 通过。
 - 未在真实手机或 Safari、Firefox 中验证；动效只在桌面 Chromium 内核中目测。
 
+### V3 原型完整布局
+
+验证日期：2026-11-07。在主题基础上按 V3 原型重排页面：去掉侧栏改为顶部胶囊导航，新增结余大卡（本月每日支出热力图）、今年支出趋势柱状图、收入/支出/结余较上月徽标、本月收入去向、月度消费报告（本月支出 Top 3）和最近 7 笔记录。新增 `static/v3.js`（数据计算与绘制）和 `static/v3-layout.css`（布局与动效），`app.js` 只在 `render()` 末尾调用 `window.v3Render?.()`，原有元素 id 全部保留。
+
+- 口径：结余、总收入、总支出三张卡片仍跟随筛选；较上月徽标、趋势图、热力图、收入去向、Top 3 和最近记录固定按全部账目、以今天所在月份计算。上月无数据时不显示徽标。
+- 使用 25 笔示例账目在内置浏览器中检查 1440 × 1000 与 375 × 812：均无整体横向溢出，控制台无错误；趋势图 12 根柱子、热力图按当月天数生成，徽标与 Top 3 和账目一致。
+- `python3 -m unittest discover -s tests` 28 项通过（`test_http.py` 增加两个新静态文件的检查），`node --check static/app.js static/v3.js` 通过。
+- 未在真实手机、Safari、Firefox 中验证；“减少动态效果”下关闭动画只做了代码检查。
+
 ## 浏览器操作验证
 
 使用 `.qa/browser.json` 独立测试账本，未写入正式账本。

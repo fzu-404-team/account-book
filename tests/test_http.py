@@ -39,7 +39,7 @@ class HTTPTests(unittest.TestCase):
             return response.status, response.read(), response.headers
 
     def test_assets_and_private_files(self):
-        for path in ["/", "/styles.css", "/theme-v3.css", "/app.js", "/favicon.svg"]:
+        for path in ["/", "/styles.css", "/theme-v3.css", "/v3-layout.css", "/app.js", "/v3.js", "/favicon.svg"]:
             status, body, headers = self.request(path)
             self.assertEqual(status, 200)
             self.assertTrue(body)

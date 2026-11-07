@@ -10,9 +10,12 @@
   <link rel="stylesheet" href="/styles.css">
   <!-- V3 暖橙主题，删除下一行即可恢复原界面 -->
   <link rel="stylesheet" href="/theme-v3.css">
+  <!-- V3 原型布局与动效（仅 account-book-v3 副本） -->
+  <link rel="stylesheet" href="/v3-layout.css">
   <script src="/app.js" defer></script>
+  <script src="/v3.js" defer></script>
 </head>
-<body>
+<body class="v3-body">
   <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <symbol id="i-book" viewBox="0 0 24 24"><path d="M5 3h14v18H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm0 0v18M9 8h6m-6 4h6"/></symbol>
     <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
@@ -31,66 +34,140 @@
     <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
     <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4 18v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></symbol>
   </svg>
-  <aside class="sidebar">
-    <a class="brand" href="#top" aria-label="有数记账首页"><span class="brand-mark"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="brand-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb27a"/><stop offset=".5" stop-color="#f2853d"/><stop offset="1" stop-color="#d4581f"/></linearGradient><linearGradient id="brand-gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><linearGradient id="brand-bar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f07a30"/><stop offset="1" stop-color="#c2540f"/></linearGradient></defs><rect width="48" height="48" rx="14" fill="url(#brand-bg)"/><path d="M14 .5h20A13.5 13.5 0 0 1 47.5 14v5.5C40 16.5 32 15.5 24 15.5S8 16.5.5 19.5V14A13.5 13.5 0 0 1 14 .5Z" fill="url(#brand-gloss)"/><rect x="13" y="12.5" width="24" height="28" rx="5" fill="#a8430f" opacity=".28"/><rect x="12" y="10" width="24" height="28" rx="5" fill="#fffaf5"/><rect x="12" y="10" width="5.5" height="28" rx="2.75" fill="#fde2cb"/><rect x="20.5" y="26" width="3.6" height="7" rx="1.4" fill="#f7b98a"/><rect x="25.6" y="22" width="3.6" height="11" rx="1.4" fill="#f2853d"/><rect x="30.7" y="17" width="3.6" height="16" rx="1.4" fill="url(#brand-bar)"/></svg></span><span>有数<span class="brand-sub">个人记账本</span></span></a>
-    <div class="nav-label">我的账本</div>
-    <nav aria-label="主导航">
-      <a class="nav-link active" href="#top"><svg class="icon"><use href="#i-grid"/></svg>收支概览</a>
-      <a class="nav-link" href="#records-panel"><svg class="icon"><use href="#i-list"/></svg>账目明细</a>
-      <a class="nav-link" href="#stats-panel"><svg class="icon"><use href="#i-chart"/></svg>分类统计</a>
-    </nav>
-    <div class="sidebar-note"><span class="small-sprout">✳</span><p>认真记录，<br>也是好好生活。</p><span>EVERY LITTLE BIT COUNTS</span></div>
-    <div class="sidebar-bottom"><button id="help-button" class="help-button" type="button">使用说明 <span>↗</span></button><div class="local-status"><span></span> 本地账本 · JSON 存储</div></div>
-  </aside>
+  <main id="top" class="v3-page">
+    <header class="v3-top">
+      <a class="brand" href="#top" aria-label="有数记账首页"><span class="brand-mark"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="brand-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb27a"/><stop offset=".5" stop-color="#f2853d"/><stop offset="1" stop-color="#d4581f"/></linearGradient><linearGradient id="brand-gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><linearGradient id="brand-bar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f07a30"/><stop offset="1" stop-color="#c2540f"/></linearGradient></defs><rect width="48" height="48" rx="14" fill="url(#brand-bg)"/><path d="M14 .5h20A13.5 13.5 0 0 1 47.5 14v5.5C40 16.5 32 15.5 24 15.5S8 16.5.5 19.5V14A13.5 13.5 0 0 1 14 .5Z" fill="url(#brand-gloss)"/><rect x="13" y="12.5" width="24" height="28" rx="5" fill="#a8430f" opacity=".28"/><rect x="12" y="10" width="24" height="28" rx="5" fill="#fffaf5"/><rect x="12" y="10" width="5.5" height="28" rx="2.75" fill="#fde2cb"/><rect x="20.5" y="26" width="3.6" height="7" rx="1.4" fill="#f7b98a"/><rect x="25.6" y="22" width="3.6" height="11" rx="1.4" fill="#f2853d"/><rect x="30.7" y="17" width="3.6" height="16" rx="1.4" fill="url(#brand-bar)"/></svg></span><span class="v3-brand-text"><strong>有数</strong><small>个人记账本</small></span></a>
+      <nav class="v3-nav" aria-label="主导航">
+        <a class="nav-link active" href="#top"><svg class="icon"><use href="#i-grid"/></svg>概览</a>
+        <a class="nav-link" href="#records-panel">明细</a>
+        <a class="nav-link" href="#stats-panel">统计</a>
+        <a class="nav-link" href="#budget-panel">预算</a>
+        <a class="nav-link" href="#backup-panel">备份</a>
+      </nav>
+      <div class="v3-top-actions">
+        <button id="help-button" class="v3-round" type="button" aria-label="使用说明"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17h.01"/></svg></button>
+        <span class="v3-status"><span class="v3-ping" aria-hidden="true"></span>本地账本</span>
+      </div>
+    </header>
 
-  <main id="top">
-    <header class="topbar"><div class="breadcrumb">我的账本 <span>/</span> <strong>收支概览</strong></div><div id="today-label" class="today-label"></div></header>
-    <section class="page-heading"><div><div class="eyebrow">A LITTLE RECORD, A BETTER LIFE</div><h1>生活有数，心里有底<span>。</span></h1><p>从一笔小小的记录，了解自己的每一天。</p></div><button class="button primary add-record" type="button" disabled><svg class="icon"><use href="#i-plus"/></svg>记一笔</button></section>
+    <section class="page-heading v3-heading">
+      <div>
+        <div class="eyebrow">A LITTLE RECORD, A BETTER LIFE</div>
+        <h1>收支概览<span>。</span></h1>
+        <p>把收入、支出和预算放在一屏里，花钱前先心里有数。</p>
+      </div>
+      <div class="v3-heading-actions">
+        <span class="v3-live"><span class="v3-ping orange" aria-hidden="true"></span>实时保存 · <span id="today-label" class="today-label"></span></span>
+        <button class="button primary add-record" type="button" disabled><svg class="icon"><use href="#i-plus"/></svg>记一笔</button>
+      </div>
+    </section>
 
     <section class="quick-entry" aria-labelledby="quick-title">
       <form id="quick-form" class="quick-form" autocomplete="off" novalidate>
         <label id="quick-title" class="quick-label" for="quick-text"><svg class="icon"><use href="#i-spark"/></svg>一句话记账</label>
-        <div class="quick-input"><input id="quick-text" name="text" type="text" maxlength="100" placeholder="说一句就能记，例如：昨天午饭 15" aria-describedby="quick-help quick-error" disabled><button type="submit" id="quick-submit" class="button primary" disabled>识别</button></div>
+        <div class="quick-input"><span class="v3-beam" aria-hidden="true"></span><input id="quick-text" name="text" type="text" maxlength="100" placeholder="说一句就能记，例如：昨天午饭 15" aria-describedby="quick-help quick-error" disabled><button type="submit" id="quick-submit" class="button primary v3-shimmer" disabled>识别</button></div>
       </form>
       <div class="quick-examples" id="quick-help"><span>试试：</span><button type="button" data-example="昨天午饭 15">昨天午饭 15</button><button type="button" data-example="收到工资 5000">收到工资 5000</button><button type="button" data-example="11月5日 打车 23.5元">11月5日 打车 23.5元</button><button type="button" data-example="3杯奶茶 54 和室友">3杯奶茶 54 和室友</button></div>
       <p id="quick-error" class="form-error" role="alert" hidden></p>
     </section>
 
     <div id="load-error" class="error-banner" role="alert" hidden><span></span><button id="retry-button" type="button">重试</button></div>
-    <section class="summary-grid" aria-label="当前筛选收支汇总">
-      <article class="summary-card income-card"><div class="summary-top"><span>总收入</span><span class="metric-icon income"><svg class="icon"><use href="#i-arrow"/></svg></span></div><div class="metric"><span>¥</span><strong id="income-total">0.00</strong></div><p>每一份努力，都有回响</p></article>
-      <article class="summary-card expense-card"><div class="summary-top"><span>总支出</span><span class="metric-icon expense"><svg class="icon"><use href="#i-arrow"/></svg></span></div><div class="metric"><span>¥</span><strong id="expense-total">0.00</strong></div><p>每一笔花费，都有迹可循</p></article>
-      <article class="summary-card balance-card"><div class="summary-top"><span>收支结余</span><span class="metric-icon balance"><svg class="icon"><use href="#i-wallet"/></svg></span></div><div class="metric"><span>¥</span><strong id="balance-total">0.00</strong></div><p>收入 − 支出 <span class="balance-count" id="summary-count">0 笔记录</span></p></article>
-    </section>
 
-    <section class="budget-panel" id="budget-panel" aria-labelledby="budget-title">
-      <div class="budget-heading">
-        <div>
-          <h2 id="budget-title"><svg class="icon"><use href="#i-target"/></svg>月度预算</h2>
-          <p>统计所选月份的全部支出，不受上方筛选影响</p>
-        </div>
-        <div class="budget-controls">
-          <label class="budget-month-label">月份<input type="month" id="budget-month" aria-label="选择预算月份"></label>
-          <button type="button" class="button secondary" id="budget-edit">设置预算</button>
-        </div>
+    <div class="v3-grid">
+      <div class="v3-col-left">
+        <article class="summary-card balance-card v3-hero">
+          <span class="v3-beam" aria-hidden="true"></span>
+          <div class="summary-top"><span class="v3-card-title"><span class="metric-icon balance"><svg class="icon"><use href="#i-wallet"/></svg></span>收支结余</span><span class="v3-chip" id="v3-scope">当前筛选</span></div>
+          <div class="v3-hero-body">
+            <div>
+              <div class="metric"><span>¥</span><strong id="balance-total">0.00</strong></div>
+              <p>收入 − 支出 <span class="balance-count" id="summary-count">0 笔记录</span></p>
+              <div class="v3-badge" id="v3-balance-badge" hidden></div>
+            </div>
+            <figure class="v3-heat-wrap">
+              <div class="v3-heat" id="v3-heat" role="img" aria-label="本月每日支出热力"></div>
+              <figcaption id="v3-heat-caption">每日支出热力</figcaption>
+            </figure>
+          </div>
+          <div class="v3-actions">
+            <button class="button primary add-record" type="button" disabled><svg class="icon"><use href="#i-plus"/></svg>记一笔</button>
+            <button class="button secondary v3-shimmer" type="button" data-v3-action="quick"><svg class="icon"><use href="#i-spark"/></svg>一句话记账</button>
+            <button class="button secondary" type="button" data-v3-action="export"><svg class="icon"><use href="#i-download"/></svg>导出 CSV</button>
+          </div>
+        </article>
+
+        <article class="panel v3-card v3-trend" id="v3-trend-card" aria-labelledby="v3-trend-title">
+          <div class="v3-card-head"><h2 id="v3-trend-title" class="v3-card-title"><span class="metric-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></span>支出趋势</h2><span class="v3-chip" id="v3-trend-year">今年</span></div>
+          <div class="v3-trend-total"><strong>¥<span id="v3-year-total">0.00</span></strong><span class="v3-badge" id="v3-year-badge" hidden></span></div>
+          <svg id="v3-trend" class="v3-trend-chart" viewBox="0 0 560 230" role="img" aria-label="今年每月支出柱状图"></svg>
+        </article>
       </div>
-      <div id="budget-loading" class="budget-loading" hidden>正在读取预算…</div>
-      <div id="budget-error" class="budget-error" role="alert" hidden><span></span><button type="button" id="budget-retry">重试</button></div>
-      <div id="budget-body" class="budget-body">
-        <div class="budget-status-row">
-          <span id="budget-status" class="budget-status" aria-live="polite">正在读取预算…</span>
-          <span id="budget-percent" class="budget-percent"></span>
-        </div>
-        <div class="budget-progress" id="budget-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="预算使用进度">
-          <div class="budget-progress-fill" id="budget-progress-fill"></div>
-        </div>
-        <div class="budget-metrics">
-          <div class="budget-metric"><span>预算</span><strong id="budget-amount">—</strong></div>
-          <div class="budget-metric"><span>已用</span><strong id="budget-spent">¥0.00</strong></div>
-          <div class="budget-metric" id="budget-remaining-metric"><span id="budget-remaining-label">剩余</span><strong id="budget-remaining">—</strong></div>
-        </div>
+
+      <div class="v3-col-right">
+        <article class="summary-card income-card">
+          <div class="summary-top"><span class="v3-card-title"><span class="metric-icon income"><svg class="icon"><use href="#i-arrow"/></svg></span>总收入</span></div>
+          <div class="metric"><span>¥</span><strong id="income-total">0.00</strong></div>
+          <div class="v3-badge" id="v3-income-badge" hidden></div>
+        </article>
+        <article class="summary-card expense-card">
+          <div class="summary-top"><span class="v3-card-title"><span class="metric-icon expense"><svg class="icon"><use href="#i-arrow"/></svg></span>总支出</span></div>
+          <div class="metric"><span>¥</span><strong id="expense-total">0.00</strong></div>
+          <div class="v3-badge" id="v3-expense-badge" hidden></div>
+        </article>
+        <article class="panel v3-card v3-keep" aria-labelledby="v3-keep-title">
+          <h2 id="v3-keep-title" class="v3-card-title"><span class="metric-icon"><svg class="icon"><use href="#i-chart"/></svg></span>本月收入去向</h2>
+          <strong class="v3-keep-value" id="v3-keep">—</strong>
+          <p class="v3-keep-note" id="v3-keep-note">本月收入留下来的比例</p>
+          <div class="v3-split" aria-hidden="true"><span class="v3-split-tip" id="v3-split-tip"></span><span class="v3-split-out" id="v3-split-out"></span><span class="v3-split-in" id="v3-split-in"></span></div>
+          <div class="v3-split-legend"><span><i class="out"></i><span id="v3-split-out-label">支出</span></span><span><i class="in"></i><span id="v3-split-in-label">结余</span></span></div>
+        </article>
+        <article class="v3-report" aria-labelledby="v3-report-title">
+          <div class="v3-glass g1" aria-hidden="true"></div>
+          <div class="v3-glass g2" aria-hidden="true" id="v3-glass-prev"></div>
+          <div class="v3-glass g3" aria-hidden="true" id="v3-glass-now"></div>
+          <h2 id="v3-report-title">月度<br>消费报告</h2>
+          <p class="v3-report-sub">本月支出 Top 3</p>
+          <div class="v3-top3" id="v3-top3"><span>本月暂无支出</span></div>
+        </article>
+
+        <section class="budget-panel v3-wide" id="budget-panel" aria-labelledby="budget-title">
+          <div class="budget-heading">
+            <div>
+              <h2 id="budget-title"><svg class="icon"><use href="#i-target"/></svg>月度预算</h2>
+              <p>统计所选月份的全部支出，不受上方筛选影响</p>
+            </div>
+            <div class="budget-controls">
+              <label class="budget-month-label">月份<input type="month" id="budget-month" aria-label="选择预算月份"></label>
+              <button type="button" class="button secondary" id="budget-edit">设置预算</button>
+            </div>
+          </div>
+          <div id="budget-loading" class="budget-loading" hidden>正在读取预算…</div>
+          <div id="budget-error" class="budget-error" role="alert" hidden><span></span><button type="button" id="budget-retry">重试</button></div>
+          <div id="budget-body" class="budget-body">
+            <div class="budget-status-row">
+              <span id="budget-status" class="budget-status" aria-live="polite">正在读取预算…</span>
+              <span id="budget-percent" class="budget-percent"></span>
+            </div>
+            <div class="budget-progress" id="budget-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="预算使用进度">
+              <div class="budget-progress-fill" id="budget-progress-fill"></div>
+            </div>
+            <div class="budget-metrics">
+              <div class="budget-metric"><span>预算</span><strong id="budget-amount">—</strong></div>
+              <div class="budget-metric"><span>已用</span><strong id="budget-spent">¥0.00</strong></div>
+              <div class="budget-metric" id="budget-remaining-metric"><span id="budget-remaining-label">剩余</span><strong id="budget-remaining">—</strong></div>
+            </div>
+          </div>
+        </section>
       </div>
-    </section>
+    </div>
+
+    <div class="v3-row">
+      <section class="panel v3-card v3-recent" aria-labelledby="v3-recent-title">
+        <div class="v3-card-head"><h2 id="v3-recent-title" class="v3-card-title"><span class="metric-icon"><svg class="icon"><use href="#i-list"/></svg></span>最近记录</h2><a href="#records-panel" class="v3-link">查看全部明细 →</a></div>
+        <ol class="v3-recent-list" id="v3-recent"><li class="v3-recent-empty">正在读取账本…</li></ol>
+      </section>
+      <section class="panel stats-panel" id="stats-panel" aria-labelledby="stats-title"><div class="panel-heading"><div><h2 id="stats-title">支出花在哪儿</h2><p>当前筛选内的支出构成</p></div><svg class="icon muted"><use href="#i-chart"/></svg></div><div id="donut" class="donut" role="img" aria-label="暂无支出数据"><div class="donut-hole"><span>总支出</span><strong id="chart-total">¥0.00</strong><small id="chart-category-count">0 个类别</small></div></div><div id="chart-legend" class="chart-legend"></div><p id="chart-empty" class="chart-empty">记录一笔支出，看看钱花在了哪里。</p><div class="stats-note"><svg class="icon"><use href="#i-shield"/></svg><span>账本保存于本机<br>日常记录，安心留存</span></div></section>
+    </div>
 
     <section class="filter-panel" aria-labelledby="filter-title">
       <div class="filter-heading"><h2 id="filter-title">看看这段时间</h2><div class="quick-filters" aria-label="快速选择日期"><button type="button" class="selected" data-period="all" aria-pressed="true">全部</button><button type="button" data-period="month" aria-pressed="false">本月</button><button type="button" data-period="week" aria-pressed="false">本周</button></div><span id="scope-label" class="scope-label">全部记录</span></div>
@@ -101,21 +178,27 @@
       </form>
     </section>
 
-    <div class="content-grid">
-      <section class="panel records-panel" id="records-panel" aria-labelledby="records-title"><div class="panel-heading"><div><h2 id="records-title">账目明细 <span id="record-count" class="count-badge">0</span></h2><p>按记账日期倒序，最近的记录在前</p></div><div class="panel-actions"><button class="button secondary export-button" id="export-csv" type="button" title="把当前筛选的全部记录导出为 CSV，可用 Excel 打开" aria-label="导出当前筛选结果为 CSV" disabled><svg class="icon"><use href="#i-download"/></svg><span class="export-label">导出 CSV</span></button><button class="icon-button" id="refresh-button" title="刷新账目" aria-label="刷新账目" type="button">↻</button></div></div>
+    <section class="panel records-panel" id="records-panel" aria-labelledby="records-title"><div class="panel-heading"><div><h2 id="records-title">账目明细 <span id="record-count" class="count-badge">0</span></h2><p>按记账日期倒序，最近的记录在前</p></div><div class="panel-actions"><button class="button secondary export-button" id="export-csv" type="button" title="把当前筛选的全部记录导出为 CSV，可用 Excel 打开" aria-label="导出当前筛选结果为 CSV" disabled><svg class="icon"><use href="#i-download"/></svg><span class="export-label">导出 CSV</span></button><button class="icon-button" id="refresh-button" title="刷新账目" aria-label="刷新账目" type="button">↻</button></div></div>
         <div class="table-wrap"><table><thead><tr><th scope="col">类别</th><th scope="col">备注</th><th scope="col">日期</th><th scope="col" class="amount-column">金额</th><th scope="col" class="actions-column">操作</th></tr></thead><tbody id="records-body"></tbody></table></div>
         <div id="empty-state" class="empty-state"><span class="empty-icon"><svg class="icon"><use href="#i-book"/></svg></span><h3 id="empty-title">正在读取账本…</h3><p id="empty-description">稍等一下，你的记录马上就来。</p><button class="button secondary add-record" id="empty-add" type="button" hidden>记录第一笔</button></div>
         <div class="table-footer"><span id="page-info">共 0 笔记录</span><div class="pagination"><button type="button" id="previous-page" class="icon-button previous" aria-label="上一页" disabled><svg class="icon"><use href="#i-chevron"/></svg></button><span id="page-number">1 / 1</span><button type="button" id="next-page" class="icon-button" aria-label="下一页" disabled><svg class="icon"><use href="#i-chevron"/></svg></button></div></div>
       </section>
-      <section class="panel stats-panel" id="stats-panel" aria-labelledby="stats-title"><div class="panel-heading"><div><h2 id="stats-title">支出花在哪儿</h2><p>当前筛选内的支出构成</p></div><svg class="icon muted"><use href="#i-chart"/></svg></div><div id="donut" class="donut" role="img" aria-label="暂无支出数据"><div class="donut-hole"><span>总支出</span><strong id="chart-total">¥0.00</strong><small id="chart-category-count">0 个类别</small></div></div><div id="chart-legend" class="chart-legend"></div><p id="chart-empty" class="chart-empty">记录一笔支出，看看钱花在了哪里。</p><div class="stats-note"><svg class="icon"><use href="#i-shield"/></svg><span>账本保存于本机<br>日常记录，安心留存</span></div></section>
-    </div>
-    <section class="panel backup-panel" aria-labelledby="backup-title">
+
+    <section class="panel backup-panel" id="backup-panel" aria-labelledby="backup-title">
       <h2 id="backup-title">账本备份与恢复</h2>
       <p>下载完整账目 JSON 备份，不受当前筛选影响。备份含个人收支信息，请妥善保管，勿向他人随意分享。</p>
       <div class="backup-actions"><button id="backup-download" class="button secondary" type="button">下载 JSON 备份</button><button id="backup-select" class="button secondary" type="button">选择 JSON 文件恢复</button><input id="backup-file" type="file" accept=".json,application/json" hidden></div>
       <p>恢复会替换当前全部账目，建议先下载当前备份。预算不包含在账目备份中。</p>
       <p id="backup-status" role="status" aria-live="polite"></p><p id="backup-error" class="form-error" role="alert" hidden></p>
     </section>
+
+    <section class="v3-marquee" aria-label="一句话记账示例">
+      <div class="v3-marquee-track">
+        <span>「昨天午饭 15」→ 餐饮 ¥15.00</span><span>「今天地铁 4」→ 交通 ¥4.00</span><span>「收到工资 5000」→ 工资 ¥5,000.00</span><span>「奶茶 18 和朋友」→ 餐饮 ¥18.00</span><span>「买书 46」→ 学习 ¥46.00</span>
+        <span aria-hidden="true">「昨天午饭 15」→ 餐饮 ¥15.00</span><span aria-hidden="true">「今天地铁 4」→ 交通 ¥4.00</span><span aria-hidden="true">「收到工资 5000」→ 工资 ¥5,000.00</span><span aria-hidden="true">「奶茶 18 和朋友」→ 餐饮 ¥18.00</span><span aria-hidden="true">「买书 46」→ 学习 ¥46.00</span>
+      </div>
+    </section>
+
     <footer class="page-footer"><span>有数记账 <span class="footer-dot">·</span> 把日子过成喜欢的样子</span><span>金额单位：人民币（元）</span></footer>
   </main>
 
