@@ -17,6 +17,7 @@
     <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M3 6h.01M3 12h.01M3 18h.01"/></symbol>
     <symbol id="i-chart" viewBox="0 0 24 24"><path d="M12 3v9h9A9 9 0 1 1 12 3Zm4 0a9 9 0 0 1 5 5h-5Z"/></symbol>
     <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.4L12 15l-1.8-4.6L5.5 9l4.7-1.4Z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8Z"/></symbol>
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></symbol>
     <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M20 8V5H5a2 2 0 0 0 0 4h16v11H5a2 2 0 0 1-2-2V7m18 6h-6v4h6"/></symbol>
@@ -43,6 +44,15 @@
   <main id="top">
     <header class="topbar"><div class="breadcrumb">我的账本 <span>/</span> <strong>收支概览</strong></div><div id="today-label" class="today-label"></div></header>
     <section class="page-heading"><div><div class="eyebrow">A LITTLE RECORD, A BETTER LIFE</div><h1>生活有数，心里有底<span>。</span></h1><p>从一笔小小的记录，了解自己的每一天。</p></div><button class="button primary add-record" type="button" disabled><svg class="icon"><use href="#i-plus"/></svg>记一笔</button></section>
+
+    <section class="quick-entry" aria-labelledby="quick-title">
+      <form id="quick-form" class="quick-form" autocomplete="off" novalidate>
+        <label id="quick-title" class="quick-label" for="quick-text"><svg class="icon"><use href="#i-spark"/></svg>一句话记账</label>
+        <div class="quick-input"><input id="quick-text" name="text" type="text" maxlength="100" placeholder="说一句就能记，例如：昨天午饭 15" aria-describedby="quick-help quick-error" disabled><button type="submit" id="quick-submit" class="button primary" disabled>识别</button></div>
+      </form>
+      <div class="quick-examples" id="quick-help"><span>试试：</span><button type="button" data-example="昨天午饭 15">昨天午饭 15</button><button type="button" data-example="收到工资 5000">收到工资 5000</button><button type="button" data-example="11月5日 打车 23.5元">11月5日 打车 23.5元</button><button type="button" data-example="3杯奶茶 54 和室友">3杯奶茶 54 和室友</button></div>
+      <p id="quick-error" class="form-error" role="alert" hidden></p>
+    </section>
 
     <div id="load-error" class="error-banner" role="alert" hidden><span></span><button id="retry-button" type="button">重试</button></div>
     <section class="summary-grid" aria-label="当前筛选收支汇总">
@@ -107,7 +117,7 @@
     <footer class="page-footer"><span>有数记账 <span class="footer-dot">·</span> 把日子过成喜欢的样子</span><span>金额单位：人民币（元）</span></footer>
   </main>
 
-  <dialog id="record-dialog" aria-labelledby="record-dialog-title"><form id="record-form"><div class="dialog-heading"><div><span class="eyebrow">MAKE IT COUNT</span><h2 id="record-dialog-title">记一笔</h2></div><button type="button" class="icon-button close-dialog" aria-label="关闭"><svg class="icon"><use href="#i-close"/></svg></button></div><div class="type-switch" role="group" aria-label="收支类型"><button type="button" data-kind="expense" class="selected" aria-pressed="true">− 支出</button><button type="button" data-kind="income" aria-pressed="false">＋ 收入</button></div><input name="kind" type="hidden" value="expense"><label class="amount-input-label">金额（元）<span class="amount-input"><span>¥</span><input name="amount" type="number" min="0.01" max="9999999999.99" step="0.01" required placeholder="0.00" inputmode="decimal"></span></label><div class="form-two"><label>日期<input type="date" name="date" required></label><label>类别<select name="category" required></select></label></div><label class="note-label">备注 <span>选填，最多 200 字</span><textarea name="note" rows="3" maxlength="200" placeholder="这笔钱用来做什么？"></textarea></label><p id="record-error" class="form-error" role="alert" hidden></p><div class="dialog-footer"><button type="button" class="button secondary close-dialog">取消</button><button type="submit" id="save-record" class="button primary">保存记录</button></div></form></dialog>
+  <dialog id="record-dialog" aria-labelledby="record-dialog-title"><form id="record-form"><div class="dialog-heading"><div><span class="eyebrow">MAKE IT COUNT</span><h2 id="record-dialog-title">记一笔</h2></div><button type="button" class="icon-button close-dialog" aria-label="关闭"><svg class="icon"><use href="#i-close"/></svg></button></div><div id="quick-result" class="quick-result" aria-live="polite" hidden></div><div class="type-switch" role="group" aria-label="收支类型"><button type="button" data-kind="expense" class="selected" aria-pressed="true">− 支出</button><button type="button" data-kind="income" aria-pressed="false">＋ 收入</button></div><input name="kind" type="hidden" value="expense"><label class="amount-input-label">金额（元）<span class="amount-input"><span>¥</span><input name="amount" type="number" min="0.01" max="9999999999.99" step="0.01" required placeholder="0.00" inputmode="decimal"></span></label><div class="form-two"><label>日期<input type="date" name="date" required></label><label>类别<select name="category" required></select></label></div><label class="note-label">备注 <span>选填，最多 200 字</span><textarea name="note" rows="3" maxlength="200" placeholder="这笔钱用来做什么？"></textarea></label><p id="record-error" class="form-error" role="alert" hidden></p><div class="dialog-footer"><button type="button" class="button secondary close-dialog">取消</button><button type="submit" id="save-record" class="button primary">保存记录</button></div></form></dialog>
 
   <dialog id="delete-dialog" aria-labelledby="delete-title"><div class="dialog-heading"><h2 id="delete-title">删除这笔记录？</h2><button type="button" class="icon-button close-dialog" aria-label="关闭"><svg class="icon"><use href="#i-close"/></svg></button></div><p id="delete-description" class="delete-description"></p><p class="muted">删除后无法撤销，收支统计也会同步更新。</p><p id="delete-error" class="form-error" role="alert" hidden></p><div class="dialog-footer"><button type="button" class="button secondary close-dialog">保留记录</button><button type="button" class="button danger" id="confirm-delete">确认删除</button></div></dialog>
 

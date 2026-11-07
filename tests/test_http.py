@@ -104,6 +104,30 @@ class HTTPTests(unittest.TestCase):
         self.assertEqual(list(csv.reader(StringIO(body.decode("utf-8-sig")))), [["日期", "收支类型", "类别", "金额（元）", "备注"]])
         self.assertEqual(self.request("/api/records.csv?start=invalid")[0], 400)
 
+    def test_quick_parse_returns_draft_without_saving(self):
+        _, body, _ = self.request("/api/records")
+        before = json.loads(body)["total_count"]
+        status, body, _ = self.request("/api/quick-parse", "POST", {"text": "午饭 15"})
+        self.assertEqual(status, 200)
+        draft = json.loads(body)
+        self.assertEqual((draft["kind"], draft["amount_cents"], draft["category"], draft["note"]), ("expense", 1500, "餐饮", "午饭"))
+        self.assertTrue(draft["tokens"])
+        # 只解析不保存：账本记录数不变。
+        _, body, _ = self.request("/api/records")
+        self.assertEqual(json.loads(body)["total_count"], before)
+        # 草稿可以直接作为新增记录提交。
+        payload = {key: draft[key] for key in ("kind", "date", "category", "note")}
+        status, body, _ = self.request("/api/records", "POST", {**payload, "amount": draft["amount_cents"] / 100})
+        self.assertEqual(status, 201)
+        self.request(f"/api/records/{json.loads(body)['id']}", "DELETE")
+
+        for payload in ({"text": ""}, {"text": "买了本书"}, ["午饭 15"], {}):
+            with self.subTest(payload=payload):
+                status, body, _ = self.request("/api/quick-parse", "POST", payload)
+                self.assertEqual(status, 400)
+                self.assertTrue(json.loads(body)["error"])
+        self.assertEqual(self.request("/api/quick-parse", "GET")[0], 404)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -8,7 +8,8 @@ const filterForm = $("#filter-form");
 const recordForm = $("#record-form");
 const palette = ["#789363", "#bccd9b", "#d9bc8e", "#9bb9ac", "#c9977f", "#c5c69b", "#a4a7bb", "#d9dcca"];
 const symbols = { "餐饮": "食", "交通": "行", "购物": "购", "居住": "居", "娱乐": "乐", "医疗": "医", "学习": "学", "工资": "薪", "奖金": "奖", "兼职": "兼", "理财": "财", "红包": "礼" };
-const state = { data: null, page: 1, pageSize: 8, editId: null, deleteId: null, filters: {}, requestId: 0, saving: false, exporting: false };
+const state = { data: null, page: 1, pageSize: 8, editId: null, deleteId: null, filters: {}, requestId: 0, saving: false, exporting: false, fromQuick: false };
+const quickState = { parsing: false };
 const budgetState = { month: localDate().slice(0, 7), data: null, loading: false, saving: false, requestId: 0 };
 let toastTimer;
 
@@ -66,6 +67,8 @@ async function refresh(filters = state.filters, resetPage = false) {
   $("#load-error").hidden = true;
   setError("#filter-error");
   $$(".add-record").forEach((button) => { button.disabled = false; });
+  $("#quick-text").disabled = false;
+  $("#quick-submit").disabled = quickState.parsing;
   fillCategories(filterForm.elements.category, filterForm.elements.kind.value, true);
   render();
   // 账目变动后同步刷新预算卡片；内部自行处理错误，不阻断主流程。
@@ -281,8 +284,11 @@ function openRecord(record = null) {
   if (!state.data) return;
   recordForm.reset();
   state.editId = record?.id || null;
+  state.fromQuick = false;
+  renderQuickResult(null);
   setError("#record-error");
-  $("#record-dialog-title").textContent = record ? "编辑记录" : "记一笔";
+  // 只有带 id 的才是编辑；一句话记账传入的预填草稿没有 id，仍按新增处理。
+  $("#record-dialog-title").textContent = record?.id ? "编辑记录" : "记一笔";
   setKind(record?.kind || "expense");
   recordForm.elements.date.value = record?.date || localDate();
   if (record) {
@@ -367,6 +373,51 @@ async function exportCsv() {
   }
 }
 
+// 一句话记账：在对话框顶部列出“原文片段 → 识别结果”，方便用户核对后再保存。
+function renderQuickResult(result) {
+  const box = $("#quick-result");
+  box.replaceChildren();
+  box.hidden = !result;
+  if (!result) return;
+  box.append(textElement("span", "quick-result-title", "已从一句话识别，请核对："));
+  const list = document.createElement("div");
+  list.className = "quick-tokens";
+  result.tokens.forEach((token) => list.append(textElement("span", `quick-token ${token.type}`, `${token.text} → ${token.value}`)));
+  box.append(list);
+  result.warnings.forEach((warning) => box.append(textElement("p", "quick-warning", warning)));
+}
+
+async function submitQuick(event) {
+  event.preventDefault();
+  if (quickState.parsing || state.saving || !state.data) return;
+  const input = $("#quick-text");
+  const text = input.value.trim();
+  if (!text) {
+    setError("#quick-error", "先输入一句话，例如“昨天午饭 15”");
+    input.focus();
+    return;
+  }
+  quickState.parsing = true;
+  const button = $("#quick-submit");
+  button.disabled = true;
+  button.textContent = "识别中…";
+  setError("#quick-error");
+  try {
+    // 后端只解析不保存，返回的草稿用来预填“记一笔”对话框。
+    const result = await api("/api/quick-parse", "POST", { text });
+    openRecord(result);
+    state.fromQuick = true;
+    renderQuickResult(result);
+  } catch (error) {
+    setError("#quick-error", error.message);
+    input.focus();
+  } finally {
+    quickState.parsing = false;
+    button.disabled = false;
+    button.textContent = "识别";
+  }
+}
+
 async function submitFilters() {
   try { await refresh(formFilters(), true); }
   catch (error) { setError("#filter-error", error.message); }
@@ -383,6 +434,13 @@ $("#next-page").addEventListener("click", () => { state.page++; renderTable(); }
 $("#refresh-button").addEventListener("click", () => refresh().catch(showLoadError));
 $("#export-csv").addEventListener("click", exportCsv);
 $("#retry-button").addEventListener("click", () => refresh().catch(showLoadError));
+$("#quick-form").addEventListener("submit", submitQuick);
+$("#quick-text").addEventListener("input", () => setError("#quick-error"));
+$$("[data-example]").forEach((button) => button.addEventListener("click", () => {
+  $("#quick-text").value = button.dataset.example;
+  setError("#quick-error");
+  $("#quick-text").focus();
+}));
 
 $("#budget-month").value = budgetState.month;
 $("#budget-month").addEventListener("change", () => {
@@ -450,6 +508,8 @@ recordForm.addEventListener("submit", async (event) => {
   try {
     const editing = Boolean(state.editId);
     await api(editing ? `/api/records/${state.editId}` : "/api/records", editing ? "PUT" : "POST", Object.fromEntries(new FormData(recordForm)));
+    // 一句话记账的草稿保存成功后才清空输入框；中途取消时保留原句方便修改。
+    if (state.fromQuick) $("#quick-text").value = "";
     $("#record-dialog").close();
     try {
       await refresh(state.filters, true);
