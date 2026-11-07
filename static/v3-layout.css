@@ -1,0 +1,909 @@
+/*
+ * V3 原型布局与动效（仅 account-book-v3 副本），在 theme-v3.css 之后加载。
+ * 布局：顶部胶囊导航 → 标题 → 一句话记账 → 左列（结余大卡、支出趋势）+ 右列（收入、支出、收入去向、
+ * 月度消费报告、月度预算）→ 最近记录 + 分类环形图 → 筛选 → 明细 → 备份。
+ */
+
+/* 页面骨架：去掉侧栏后的整体宽度 */
+.v3-body main.v3-page {
+  margin:0 auto;
+  max-width:1360px;
+  padding:22px 32px 40px
+}
+
+.v3-page>* + * {
+  margin-top:20px
+}
+
+.v3-page .quick-entry,
+.v3-page .budget-panel,
+.v3-page .filter-panel {
+  margin-bottom:0
+}
+
+/* 顶部胶囊导航 */
+.v3-top {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px
+}
+
+.v3-top .brand {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0;
+  padding:0
+}
+
+.v3-brand-text {
+  display:flex;
+  flex-direction:column;
+  line-height:1.15
+}
+
+.v3-brand-text strong {
+  font-size:19px;
+  letter-spacing:1px
+}
+
+.v3-brand-text small {
+  font-size:11px;
+  color:#8a6a55;
+  letter-spacing:1px
+}
+
+.v3-nav {
+  display:flex;
+  flex-wrap:wrap;
+  gap:4px;
+  padding:4px;
+  border-radius:999px;
+  background:#fff;
+  box-shadow:var(--v3-shadow)
+}
+
+.v3-nav .nav-link {
+  height:38px;
+  margin:0;
+  padding:0 16px;
+  gap:8px;
+  font-size:14px
+}
+
+.v3-nav .nav-link .icon {
+  width:16px;
+  height:16px
+}
+
+.v3-top-actions {
+  display:flex;
+  align-items:center;
+  gap:8px
+}
+
+.v3-round {
+  width:40px;
+  height:40px;
+  border:0;
+  border-radius:50%;
+  background:#fff;
+  color:var(--text);
+  display:grid;
+  place-items:center;
+  box-shadow:var(--v3-shadow)
+}
+
+.v3-status,
+.v3-live {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-size:13px;
+  color:#55555a
+}
+
+.v3-status {
+  height:40px;
+  padding:0 14px;
+  border-radius:999px;
+  background:#fff;
+  box-shadow:var(--v3-shadow)
+}
+
+.v3-live {
+  color:var(--v3-expense)
+}
+
+.v3-live .today-label {
+  color:var(--v3-expense)
+}
+
+.v3-ping {
+  position:relative;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#3f9b6b
+}
+
+.v3-ping.orange {
+  background:var(--v3-orange)
+}
+
+.v3-ping::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background:inherit
+}
+
+/* 标题区 */
+.v3-heading {
+  padding:6px 0 0;
+  align-items:flex-end
+}
+
+.v3-heading h1 {
+  font-size:32px;
+  letter-spacing:-.5px
+}
+
+.v3-heading-actions {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:flex-end;
+  gap:14px
+}
+
+/* 一句话记账输入框外的流光边框 */
+.quick-input {
+  position:relative
+}
+
+.v3-beam {
+  position:absolute;
+  inset:-1px;
+  border-radius:inherit;
+  padding:2px;
+  pointer-events:none;
+  background:conic-gradient(from var(--v3-angle,0deg),transparent 0deg,transparent 260deg,#f8b27e 310deg,#ef7d32 350deg,transparent 360deg);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+  mask-composite:exclude;
+  opacity:.9
+}
+
+/* 主网格：左列结余与趋势，右列小卡片与预算 */
+.v3-grid {
+  display:flex;
+  flex-wrap:wrap;
+  gap:18px;
+  align-items:stretch
+}
+
+.v3-col-left {
+  flex:1 1 480px;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:18px
+}
+
+.v3-col-right {
+  flex:1 1 560px;
+  min-width:0;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:18px
+}
+
+.v3-wide {
+  grid-column:1 / -1
+}
+
+.v3-card {
+  padding:22px 24px
+}
+
+.v3-card-head {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px
+}
+
+.v3-card-title {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0;
+  font-size:16px;
+  font-weight:600;
+  color:var(--text)
+}
+
+.v3-card-title .metric-icon {
+  width:36px;
+  height:36px;
+  flex-shrink:0
+}
+
+.v3-card-title .metric-icon .icon {
+  width:18px;
+  height:18px
+}
+
+.v3-chip {
+  display:inline-flex;
+  align-items:center;
+  height:30px;
+  padding:0 12px;
+  border-radius:999px;
+  background:#f3f2f0;
+  color:#55555a;
+  font-size:12px
+}
+
+.v3-link {
+  color:var(--v3-expense);
+  font-size:13px;
+  font-weight:600
+}
+
+/* 小卡片：收入、支出 */
+.v3-col-right .summary-card {
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  padding:22px 24px
+}
+
+.v3-col-right .summary-card .metric>strong {
+  font-size:30px
+}
+
+.v3-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  margin-top:auto;
+  font-size:12px;
+  color:#6e6e73
+}
+
+.v3-badge-dot {
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  display:inline-grid;
+  place-items:center;
+  color:#fff;
+  font-size:10px
+}
+
+.v3-badge.good .v3-badge-dot {
+  background:#3f9b6b
+}
+
+.v3-badge.good strong {
+  color:var(--v3-income)
+}
+
+.v3-badge.warn .v3-badge-dot {
+  background:var(--v3-orange)
+}
+
+.v3-badge.warn strong {
+  color:var(--v3-expense)
+}
+
+.v3-badge.neutral {
+  padding:4px 10px;
+  border-radius:999px;
+  background:#f3f2f0;
+  margin-top:0
+}
+
+/* 结余大卡 */
+.v3-hero {
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  padding:24px 26px
+}
+
+.v3-hero .v3-beam {
+  border-radius:var(--radius)
+}
+
+.v3-hero-body {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:16px
+}
+
+.v3-hero .metric>strong {
+  font-size:46px;
+  line-height:1.05
+}
+
+.v3-hero .v3-badge {
+  margin-top:10px
+}
+
+.v3-heat-wrap {
+  margin:0;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:6px
+}
+
+.v3-heat {
+  display:grid;
+  grid-template-columns:repeat(7,13px);
+  gap:4px
+}
+
+.v3-cell {
+  width:13px;
+  height:13px;
+  border-radius:3px;
+  background:#ece9e4
+}
+
+.v3-cell.blank {
+  background:transparent
+}
+
+.v3-cell.future {
+  background:#f6f4f1
+}
+
+.v3-heat-wrap figcaption {
+  font-size:11px;
+  color:#6e6e73
+}
+
+.v3-actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px
+}
+
+.v3-actions .button {
+  height:40px
+}
+
+/* 支出趋势 */
+.v3-trend {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:10px
+}
+
+.v3-trend-total {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:12px
+}
+
+.v3-trend-total strong {
+  font-size:30px;
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-.5px
+}
+
+.v3-trend-chart {
+  width:100%;
+  height:auto;
+  margin-top:auto;
+  overflow:visible
+}
+
+.v3-grid-line {
+  stroke:#ecebe8;
+  stroke-dasharray:3 5
+}
+
+.v3-axis,
+.v3-month {
+  font-size:11px;
+  fill:#8e8e93
+}
+
+.v3-month {
+  text-anchor:middle;
+  fill:#6e6e73
+}
+
+.v3-month.now {
+  fill:var(--v3-expense);
+  font-weight:600
+}
+
+.v3-bar {
+  fill:#f0efec;
+  transition:fill .2s
+}
+
+.v3-bar:hover {
+  fill:#f7c9a6
+}
+
+.v3-bar.hot {
+  fill:url(#v3-hot)
+}
+
+.v3-tag {
+  font-size:11px;
+  font-weight:600;
+  fill:#fff;
+  text-anchor:middle
+}
+
+/* 收入去向 */
+.v3-keep {
+  display:flex;
+  flex-direction:column;
+  gap:6px
+}
+
+.v3-keep-value {
+  margin-top:10px;
+  font-size:30px;
+  font-weight:700;
+  font-variant-numeric:tabular-nums
+}
+
+.v3-keep-value.over {
+  color:#b4361f
+}
+
+.v3-keep-note {
+  margin:0 0 22px;
+  font-size:12px;
+  color:#6e6e73
+}
+
+.v3-split {
+  position:relative;
+  display:flex;
+  gap:4px;
+  height:8px
+}
+
+.v3-split-out,
+.v3-split-in {
+  height:8px;
+  border-radius:4px;
+  transition:width .9s cubic-bezier(.2,.7,.2,1)
+}
+
+.v3-split-out {
+  background:var(--v3-orange)
+}
+
+.v3-split-in {
+  background:#3f9b6b
+}
+
+.v3-split-tip {
+  position:absolute;
+  top:-30px;
+  transform:translateX(-50%);
+  padding:3px 9px;
+  border-radius:999px;
+  background:var(--v3-orange);
+  color:#fff;
+  font-size:11px;
+  font-weight:600;
+  white-space:nowrap
+}
+
+.v3-split-legend {
+  display:flex;
+  justify-content:space-between;
+  margin-top:8px;
+  font-size:12px;
+  color:#6e6e73
+}
+
+.v3-split-legend i {
+  display:inline-block;
+  width:7px;
+  height:7px;
+  margin-right:5px;
+  border-radius:50%
+}
+
+.v3-split-legend i.out {
+  background:var(--v3-orange)
+}
+
+.v3-split-legend i.in {
+  background:#3f9b6b
+}
+
+/* 月度消费报告：浅杏渐变与半透明叠卡 */
+.v3-report {
+  position:relative;
+  overflow:hidden;
+  min-height:236px;
+  padding:22px 24px;
+  border:1px solid var(--v3-peach-line);
+  border-radius:var(--radius);
+  background:linear-gradient(150deg,#fff3e8 0%,#fde2cb 55%,#f9cba6 100%);
+  color:#5a2a0a;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  box-shadow:var(--v3-shadow)
+}
+
+.v3-report h2 {
+  position:relative;
+  margin:0 0 auto;
+  font-size:17px;
+  line-height:1.3;
+  color:#5a2a0a
+}
+
+.v3-report-sub {
+  position:relative;
+  margin:12px 0 10px;
+  font-size:14px;
+  font-weight:600
+}
+
+.v3-glass {
+  position:absolute;
+  width:150px;
+  height:96px;
+  padding:10px 12px;
+  border-radius:14px;
+  font-size:10px;
+  line-height:1.5;
+  white-space:pre-line
+}
+
+.v3-glass.g1 {
+  right:-18px;
+  top:18px;
+  rotate:10deg;
+  background:rgba(255,255,255,.4);
+  border:1px solid rgba(239,125,50,.22)
+}
+
+.v3-glass.g2 {
+  right:20px;
+  top:30px;
+  rotate:4deg;
+  background:rgba(255,255,255,.62);
+  border:1px solid rgba(239,125,50,.28)
+}
+
+.v3-glass.g3 {
+  right:56px;
+  top:46px;
+  rotate:-5deg;
+  background:rgba(255,255,255,.85);
+  border:1px solid rgba(239,125,50,.32)
+}
+
+.v3-top3 {
+  position:relative;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr))
+}
+
+.v3-top3-item {
+  display:flex;
+  flex-direction:column;
+  padding:0 10px;
+  border-right:1px solid rgba(122,50,8,.18)
+}
+
+.v3-top3-item:first-child {
+  padding-left:0
+}
+
+.v3-top3-item:last-child {
+  border-right:0
+}
+
+.v3-top3-item span {
+  font-size:12px
+}
+
+.v3-top3-item strong {
+  font-size:16px;
+  font-variant-numeric:tabular-nums
+}
+
+.v3-top3-empty {
+  grid-column:1 / -1;
+  font-size:13px
+}
+
+/* 最近记录与分类环形图并排 */
+.v3-row {
+  display:flex;
+  flex-wrap:wrap;
+  gap:18px;
+  align-items:stretch
+}
+
+.v3-recent {
+  flex:999 1 600px;
+  min-width:0;
+  padding:0
+}
+
+.v3-recent .v3-card-head {
+  padding:20px 24px 14px
+}
+
+.v3-row .stats-panel {
+  flex:1 1 320px;
+  min-width:0
+}
+
+.v3-recent-list {
+  list-style:none;
+  margin:0;
+  padding:0
+}
+
+.v3-recent-item {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:13px 24px;
+  border-top:1px solid #f1efec;
+  transition:background .2s
+}
+
+.v3-recent-item:hover {
+  background:#fdf7f2
+}
+
+.v3-tile {
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+  font-weight:700;
+  background:var(--v3-peach);
+  color:var(--v3-expense)
+}
+
+.v3-tile.income {
+  background:var(--v3-income-soft);
+  color:var(--v3-income)
+}
+
+.v3-recent-text {
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column
+}
+
+.v3-recent-text span {
+  margin-top:2px;
+  font-size:13px;
+  color:#6e6e73;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap
+}
+
+.v3-recent-date {
+  width:84px;
+  font-size:13px;
+  color:#6e6e73
+}
+
+.v3-recent-amount {
+  width:120px;
+  text-align:right;
+  font-weight:700;
+  font-variant-numeric:tabular-nums
+}
+
+.v3-recent-amount.income {
+  color:var(--v3-income)
+}
+
+.v3-recent-amount.expense {
+  color:var(--v3-expense)
+}
+
+.v3-recent-empty {
+  padding:18px 24px;
+  border-top:1px solid #f1efec;
+  color:#6e6e73
+}
+
+/* 一句话记账示例跑马灯 */
+.v3-marquee {
+  overflow:hidden;
+  padding:12px 0;
+  border-radius:18px;
+  background:#fff;
+  box-shadow:var(--v3-shadow)
+}
+
+.v3-marquee-track {
+  display:flex;
+  gap:10px;
+  width:max-content
+}
+
+.v3-marquee-track span {
+  padding:8px 16px;
+  border-radius:999px;
+  background:#f3f2f0;
+  font-size:14px;
+  white-space:nowrap
+}
+
+.v3-body .toast {
+  left:50%
+}
+
+/* 窄屏：导航横向滚动，结余大卡上下排列 */
+@media(max-width:760px) {
+  .v3-body main.v3-page {
+    padding:16px 16px 32px
+  }
+
+  .v3-nav {
+    order:3;
+    width:100%;
+    flex-wrap:nowrap;
+    overflow-x:auto
+  }
+
+  .v3-nav .nav-link {
+    flex:0 0 auto
+  }
+
+  .v3-heading {
+    flex-direction:column;
+    align-items:flex-start
+  }
+
+  .v3-heading-actions {
+    justify-content:flex-start
+  }
+
+  .v3-hero .metric>strong {
+    font-size:38px
+  }
+
+  .v3-heat-wrap {
+    align-items:flex-start
+  }
+
+  .v3-recent-date {
+    display:none
+  }
+
+  .v3-recent-amount {
+    width:auto
+  }
+
+  .v3-top3-item strong {
+    font-size:14px
+  }
+}
+
+/* 动效：参考 magicui 的边框流光、按钮扫光、脉冲点、依次出现等；系统开启“减少动态效果”时不播放 */
+@property --v3-angle {
+  syntax:'<angle>';
+  initial-value:0deg;
+  inherits:false
+}
+
+@media (prefers-reduced-motion:no-preference) {
+  .v3-beam {
+    animation:v3Beam 6s linear infinite
+  }
+
+  .quick-input .v3-beam {
+    animation-duration:4s
+  }
+
+  .v3-ping::after {
+    animation:v3Ping 1.6s cubic-bezier(0,0,.2,1) infinite
+  }
+
+  .v3-shimmer {
+    position:relative;
+    overflow:hidden
+  }
+
+  .v3-shimmer::after {
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.7) 50%,transparent 70%);
+    transform:translateX(-120%);
+    animation:v3Shine 3s ease-in-out infinite 1.2s
+  }
+
+  .v3-top,
+  .v3-col-left>*,
+  .v3-col-right>*,
+  .v3-row>*,
+  .v3-marquee {
+    animation:v3Fade .7s cubic-bezier(.2,.7,.2,1) both
+  }
+
+  .v3-col-left>:nth-child(2) { animation-delay:.3s }
+  .v3-col-right>:nth-child(1) { animation-delay:.2s }
+  .v3-col-right>:nth-child(2) { animation-delay:.26s }
+  .v3-col-right>:nth-child(3) { animation-delay:.32s }
+  .v3-col-right>:nth-child(4) { animation-delay:.38s }
+  .v3-col-right>:nth-child(5) { animation-delay:.44s }
+  .v3-row>:nth-child(2) { animation-delay:.5s }
+
+  .v3-cell:not(.blank) {
+    animation:v3Pop .45s cubic-bezier(.3,1.4,.5,1) both
+  }
+
+  .v3-bar {
+    transform-box:fill-box;
+    transform-origin:50% 100%;
+    animation:v3Grow .9s cubic-bezier(.2,.7,.2,1) both
+  }
+
+  .v3-bob {
+    animation:v3Bob 2.4s ease-in-out infinite 1.2s
+  }
+
+  .v3-glass {
+    animation:v3Float 4.5s ease-in-out infinite
+  }
+
+  .v3-glass.g2 { animation-delay:.3s }
+  .v3-glass.g1 { animation-delay:.6s }
+
+  .v3-recent-item {
+    animation:v3Slide .55s cubic-bezier(.2,.7,.2,1) both
+  }
+
+  .v3-marquee-track {
+    animation:v3Marquee 26s linear infinite
+  }
+
+  .v3-marquee:hover .v3-marquee-track {
+    animation-play-state:paused
+  }
+
+  @keyframes v3Beam { to { --v3-angle:360deg } }
+  @keyframes v3Ping { 75%,100% { transform:scale(2.6); opacity:0 } }
+  @keyframes v3Shine { 55%,100% { transform:translateX(120%) } }
+  @keyframes v3Pop { from { transform:scale(0); opacity:0 } }
+  @keyframes v3Grow { from { transform:scaleY(0) } }
+  @keyframes v3Bob { 50% { translate:0 -4px } }
+  @keyframes v3Float { 50% { translate:0 -8px } }
+  @keyframes v3Slide { from { opacity:0; transform:translateX(-14px) } }
+  @keyframes v3Marquee { to { transform:translateX(-50%) } }
+}

@@ -126,6 +126,8 @@ function render() {
   $("#donut").style.background = stops.length ? `conic-gradient(${stops.join(",")})` : "#edf1e5";
   $("#donut").setAttribute("aria-label", categories.length ? `支出构成：${categories.map((item) => `${item.category} ${money(item.amount_cents)} 元`).join("，")}` : "暂无支出数据");
   renderTable();
+  // V3 原型布局：趋势图、热力图、环比等由 v3.js 负责，这里只在每次刷新后通知它。
+  window.v3Render?.();
 }
 
 function renderBudgetLoading() {
